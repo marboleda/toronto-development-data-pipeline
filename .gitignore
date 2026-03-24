@@ -1,0 +1,4 @@
+notes.txt
+
+# Terraform-related files that should be ignored to prevent sensitive information from being exposed
+infrastructure/*.json

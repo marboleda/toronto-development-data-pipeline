@@ -20,6 +20,7 @@ By processing & analysing this data, it can gives us insight and trends relating
 | Terraform | Infrastructure Provisioning |
 | Google Cloud Storage | Data Lake |
 | Google Big Query | Data Warehouse |
+| | |
 | Looker | Data Visualization (Dashboards) |
 
 We will be using **batch** processing for this project.  
