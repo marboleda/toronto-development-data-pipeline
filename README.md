@@ -18,6 +18,7 @@ By processing & analysing this data, it can gives us insight and trends relating
 | Technology | Purpose |
 |---|---|
 | Terraform | Infrastructure Provisioning |
+| Kestra | Workflow Orchestration |
 | Google Cloud Storage | Data Lake |
 | Google Big Query | Data Warehouse |
 | | |

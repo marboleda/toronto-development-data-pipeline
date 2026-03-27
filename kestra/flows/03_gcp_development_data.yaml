@@ -1,0 +1,20 @@
+id: 03_gcp_development_data
+namespace: toronto_development
+description: |
+  This will take the data from the URL and extract it into Google Cloud Storage (GCS), then load it from there into BigQuery.
+
+variables:
+  source_file: "development_pipeline.csv"
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.source_file}}"
+  table: "{{kv('GCP_DATASET')}}.development_pipeline"
+  data: "{{outputs.extract.outputFiles[{{vars.source_file}}]}}"
+
+tasks:
+  - id: extract
+    type: io.kestra.plugin.scripts.shell.Commands
+    outputFiles:
+      - "*.csv"
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - "curl -o {{vars.source_file}} https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/a7a327c5-4e25-4881-816d-c8b145e02832/resource/dc28845a-299f-4562-b605-27b6fefc17e0/download/Development%20Pipeline.csv"

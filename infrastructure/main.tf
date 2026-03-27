@@ -33,6 +33,16 @@ resource "google_bigquery_dataset" "development_data_dataset" {
     location = var.location
 }
 
+/*
 resource "google_dataproc_batch" "development_data_processing_batch" {
+    batch_id = "development-data-processing-batch"
     location = var.location
+
+    runtime_config {
+        version = "2.3"
+    }
+
+    pyspark_batch {
+    }
 }
+*/
