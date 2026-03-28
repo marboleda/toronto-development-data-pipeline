@@ -4,10 +4,11 @@ description: |
   This will take the data from the URL and extract it into Google Cloud Storage (GCS), then load it from there into BigQuery.
 
 variables:
-  source_file: "development_pipeline.csv"
-  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.source_file}}"
+  file: "development_pipeline_{{ now() | date('yyyy-MM-dd') }}.csv"
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.file}}"
   table: "{{kv('GCP_DATASET')}}.development_pipeline"
-  data: "{{outputs.extract.outputFiles[{{vars.source_file}}]}}"
+  data: "{{outputs.extract.outputFiles[render(vars.file)]}}"
+
 
 tasks:
   - id: extract
@@ -17,4 +18,28 @@ tasks:
     taskRunner:
       type: io.kestra.plugin.core.runner.Process
     commands:
-      - "curl -o {{vars.source_file}} https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/a7a327c5-4e25-4881-816d-c8b145e02832/resource/dc28845a-299f-4562-b605-27b6fefc17e0/download/Development%20Pipeline.csv"
+      - "curl -o {{render(vars.file)}} https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/a7a327c5-4e25-4881-816d-c8b145e02832/resource/dc28845a-299f-4562-b605-27b6fefc17e0/download/Development%20Pipeline.csv"
+
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{render(vars.data)}}"
+    to: "{{render(vars.gcs_file)}}"
+
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+    description: If you'd like to explore Kestra outputs, disable this.
+    disabled: false
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{secret('SERVICE_ACCOUNT_KEY')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 0 1 */3 *" # runs at the end of every quarter (beginning of Jan, Apr, Jul, and Oct)
+    timezone: "America/Toronto"

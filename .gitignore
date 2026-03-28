@@ -5,3 +5,5 @@ notes.txt
 infrastructure/*.tfstate
 infrastructure/*.tfstate.*
 infrastructure/.terraform/
+
+.env
