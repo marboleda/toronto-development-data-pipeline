@@ -1,0 +1,64 @@
+id: 03_table_setup
+namespace: toronto_development
+description: |
+  This will set up the necessary tables in Google Cloud BigQuery for the development data.
+  Do not run if table already exists (should fail anyways).
+
+tasks:
+  - id: create_table
+    type: io.kestra.plugin.gcp.bigquery.CreateTable
+    table: "development_pipeline"
+    description: "This table will contain the data about the development pipeline in Toronto, including the quarter and year (e.g. Q1 2026) that this data was pulled (this data is updated quarterly)"
+    serviceAccount: "{{secret('SERVICE_ACCOUNT_KEY')}}"
+    dataset: "{{kv('GCP_DATASET')}}"
+    tableDefinition:
+      type: TABLE
+      schema:
+        fields:
+          - name: id
+            type: BYTES
+            description: "Unique identifier for each record (e.g. a hash of the other fields)"
+            mode: required
+          - name: opendata_id
+            type: INT64
+            description: "The original ID from the open data source"
+          - name: pipeline_status
+            type: STRING
+            description: "The current status of the development application in the pipeline (e.g. 'Under Review', 'Active', 'Built')"
+          - name: application_number
+            type: STRING
+            description: "The application number for this development application, which can be used to look up more details about the application in the City of Toronto's application information centre"
+          - name: date_received
+            type: DATE
+            description: "The date the application was received"
+          - name: description
+            type: STRING
+            description: "A description of the development application, which may include details about the proposed development"
+          - name: address
+            type: STRING
+            description: "The street address of the development project"
+          - name: ward
+            type: STRING
+            description: "The ward in which the development project is located"
+          - name: proposed_residential_gross_floor_area
+            type: NUMERIC
+            description: "The proposed gross floor area for residential units"
+          - name: proposed_non_residential_gross_floor_area
+            type: NUMERIC
+          - name: proposed_gross_floor_area
+            type: NUMERIC
+            description: "The total proposed gross floor area, this seems to just be (residential + non-residential), but the source data keeps it in a separate column so will also store it in case it's different"
+          - name: proposed_residential_units
+            type: NUMERIC
+            description: "The number of proposed residential units"
+          - name: application_information_centre_link
+            type: STRING
+            description: "A link to the application information centre for this record, which may contain more details about the development application"
+          - name: quarter
+            type: INT64
+            description: "The quarter during which this data was pulled (Q1, Q2, Q3, Q4)"
+            mode: REQUIRED
+          - name: year
+            type: STRING
+            description: "The year during which this data was pulled (e.g. 2026)"
+            mode: REQUIRED

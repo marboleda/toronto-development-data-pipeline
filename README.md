@@ -29,4 +29,5 @@ The Development Pipeline source data is refreshed Quarterly, and site developmen
 
 ## Dashboard
 
-## Potential Improvements for the Future
+## Potential Improvements
+- The source data does not have a well-defined data dictionary yet, so we need to infer or make assumptions. In a real-world scenario, we should verify with the source data provider about the fields and how they operate (e.g. uniqueness of `Application Number`, whether it ever changes, whether we can be sure that `_id` corresponds to the same application between each data refresh, etc.)

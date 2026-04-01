@@ -1,0 +1,114 @@
+id: 04_data_extract_scheduled
+namespace: toronto_development
+description: |
+  This will take the data from the URL and extract it into Google Cloud Storage (GCS), then load it from there into BigQuery.
+
+variables:
+  file: "development_pipeline_{{ trigger.date | date('yyyy-MM-dd') }}.csv"
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.file}}"
+  table: "{{kv('GCP_DATASET')}}.development_pipeline"
+  data: "{{outputs.extract.outputFiles[render(vars.file)]}}"
+  data_pull_month: "{{ trigger.date | date('MM') }}"
+  data_pull_year: "{{ trigger.date | date('yyyy') }}"
+
+
+tasks:
+  - id: extract
+    type: io.kestra.plugin.scripts.shell.Commands
+    outputFiles:
+      - "*.csv"
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:
+      - "curl -o {{render(vars.file)}} https://ckan0.cf.opendata.inter.prod-toronto.ca/dataset/a7a327c5-4e25-4881-816d-c8b145e02832/resource/dc28845a-299f-4562-b605-27b6fefc17e0/download/Development%20Pipeline.csv"
+
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{render(vars.data)}}"
+    to: "{{render(vars.gcs_file)}}"
+
+### This plugin doesn't seem to work with empty schema for external table definitiion (even with autodetect set to true), will have to create using SQL task instead
+#  - id: create_external_table
+#    type: io.kestra.plugin.gcp.bigquery.CreateTable
+#    table: "development_pipeline_external_ext"
+#    description: "This external table points to the CSV file in GCS, and is used as the source to load data into the 'development_pipeline_data' table. This allows us to have a clear separation between the raw data (in the external table) and the cleaned/processed data (in the 'development_pipeline_data' table), and also allows us to easily re-run the load step if needed without having to re-download the data from the source."
+#    tableDefinition:
+#      type: EXTERNAL
+#      externalTableDefinition:
+#        formatType: CSV
+#        ignoreUnknownValues: true
+#        autodetect: true
+#        sourceUris:
+#          - "{{render(vars.gcs_file)}}"
+
+  - id: create_external_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE EXTERNAL TABLE `{{render(vars.table)}}_ext`
+      OPTIONS (
+        format = 'CSV',
+        uris = ['{{render(vars.gcs_file)}}']
+      )
+
+  - id: temp_table
+    type: io.kestra.plugin.gcp.bigquery.Query
+    description: | 
+      This creates a temporary table with cleaned & processed data from the external table (updated column names, quarter & year for which this data pull was for). 
+      We will load this later into the final table"
+    sql: |
+      CREATE OR REPLACE TABLE `{{render(vars.table)}}_temp` AS
+        CAST(NULL as BYTES) AS unique_row_id,
+        _id,
+        Pipeline_Status AS pipeline_status,
+        Application_Number AS application_number,
+        Date_Received AS date_received,
+        Description AS description,
+        Address AS address,
+        Ward AS ward,
+        Proposed_Residential_Gross_Floor_Area AS proposed_residential_gross_floor_area,
+        Proposed_Non_Residential_Gross_Floor_Area AS proposed_non_residential_gross_floor_area,
+        Proposed_Gross_Floor_Area AS proposed_gross_floor_area,
+        Proposed_Residential_Units AS proposed_residential_units,
+        Application_Information_Centre_Link AS application_information_centre_link,
+        CASE {{render(vars.data_pull_month)}}
+          WHEN '04' THEN 1
+          WHEN '07' THEN 2
+          WHEN '10' THEN 3
+          WHEN '01' THEN 4
+        END AS quarter,
+        "{{render(vars.data_pull_date)}}" AS year
+      FROM `{{render(vars.table)}}_external_ext`
+
+  - id: add_unique_ids
+    type: io.kestra.plugin.gcp.bigquery.Query
+    description: |
+      This adds unique IDs to each row based on a hash of other fields. This is important because there isn't a unique identifier in the source data.
+    sql: |
+      UPDATE `{{render(vars.table)}}_temp`
+      SET unique_row_id = MD5(CONCAT(
+        CAST(_id AS STRING),
+        application_number,
+        CAST(quarter AS STRING),
+        CAST(year AS STRING)
+      ))
+
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+    description: If you'd like to explore Kestra outputs, disable this.
+    disabled: false
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{secret('SERVICE_ACCOUNT_KEY')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
+      dataset: "{{kv('GCP_DATASET')}}"
+
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 0 1 */3 *" # runs at the end of every quarter (beginning of Jan, Apr, Jul, and Oct)
+    timezone: "America/Toronto"
