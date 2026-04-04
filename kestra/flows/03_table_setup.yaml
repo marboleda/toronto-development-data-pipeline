@@ -18,7 +18,7 @@ tasks:
           - name: id
             type: BYTES
             description: "Unique identifier for each record (e.g. a hash of the other fields)"
-            mode: required
+            mode: REQUIRED
           - name: opendata_id
             type: INT64
             description: "The original ID from the open data source"
@@ -41,12 +41,13 @@ tasks:
             type: STRING
             description: "The ward in which the development project is located"
           - name: proposed_residential_gross_floor_area
-            type: NUMERIC
+            type: FLOAT64
             description: "The proposed gross floor area for residential units"
           - name: proposed_non_residential_gross_floor_area
-            type: NUMERIC
+            type: FLOAT64
+            description: "The proposed gross floor area for non-residential units"
           - name: proposed_gross_floor_area
-            type: NUMERIC
+            type: FLOAT64
             description: "The total proposed gross floor area, this seems to just be (residential + non-residential), but the source data keeps it in a separate column so will also store it in case it's different"
           - name: proposed_residential_units
             type: NUMERIC
@@ -56,9 +57,9 @@ tasks:
             description: "A link to the application information centre for this record, which may contain more details about the development application"
           - name: quarter
             type: INT64
-            description: "The quarter during which this data was pulled (Q1, Q2, Q3, Q4)"
             mode: REQUIRED
+            description: "The quarter during which this data was pulled (Q1, Q2, Q3, Q4)"
           - name: year
             type: STRING
-            description: "The year during which this data was pulled (e.g. 2026)"
             mode: REQUIRED
+            description: "The year during which this data was pulled (e.g. 2026)"

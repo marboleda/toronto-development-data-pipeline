@@ -7,13 +7,14 @@ variables:
 tasks:
   - id: populate_final_table
     type: io.kestra.plugin.gcp.bigquery.Query
+    serviceAccount: "{{secret('SERVICE_ACCOUNT_KEY')}}"
     sql: |
       MERGE INTO {{render(vars.table)}} AS target
       USING {{render(vars.table)}}_temp AS source
-      ON target.unique_row_id = source.unique_row_id
+      ON target.id = source.unique_row_id
       WHEN NOT MATCHED THEN
-        INSERT (unique_row_id, opendata_id, pipeline_status, application_number, date_received, description, address, ward, proposed_residential_gross_floor_area, proposed_non_residential_gross_floor_area, proposed_gross_floor_area, proposed_residential_units, application_information_centre_link, quarter, year)
-        VALUES (source.unique_row_id, source._id, source.pipeline_status, source.application_number, source.date_received, source.description, source.address, source.ward, source.proposed_residential_gross_floor_area, source.proposed_non_residential_gross_floor_area, source.proposed_gross_floor_area, source.proposed_residential_units, source.application_information_centre_link, source.quarter, source.year)
+        INSERT (id, opendata_id, pipeline_status, application_number, date_received, description, address, ward, proposed_residential_gross_floor_area, proposed_non_residential_gross_floor_area, proposed_gross_floor_area, proposed_residential_units, application_information_centre_link, quarter, year)
+        VALUES (source.unique_row_id, source._id, source.pipeline_status, source.application_number, source.date_received, source.description, source.address, CAST(source.ward AS STRING), source.proposed_residential_gross_floor_area, source.proposed_non_residential_gross_floor_area, source.proposed_gross_floor_area, source.proposed_residential_units, source.application_information_centre_link, source.quarter, source.year)
 
       
 triggers:

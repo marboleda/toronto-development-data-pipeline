@@ -56,7 +56,9 @@ tasks:
       This creates a temporary table with cleaned & processed data from the external table (updated column names, quarter & year for which this data pull was for). 
       We will load this later into the final table"
     sql: |
-      CREATE OR REPLACE TABLE `{{render(vars.table)}}_temp` AS
+      CREATE OR REPLACE TABLE `{{render(vars.table)}}_temp` 
+      AS
+      SELECT
         CAST(NULL as BYTES) AS unique_row_id,
         _id,
         Pipeline_Status AS pipeline_status,
@@ -70,14 +72,14 @@ tasks:
         Proposed_Gross_Floor_Area AS proposed_gross_floor_area,
         Proposed_Residential_Units AS proposed_residential_units,
         Application_Information_Centre_Link AS application_information_centre_link,
-        CASE {{render(vars.data_pull_month)}}
+        CASE '{{render(vars.data_pull_month)}}'
           WHEN '04' THEN 1
           WHEN '07' THEN 2
           WHEN '10' THEN 3
           WHEN '01' THEN 4
         END AS quarter,
-        "{{render(vars.data_pull_date)}}" AS year
-      FROM `{{render(vars.table)}}_external_ext`
+        '{{render(vars.data_pull_year)}}' AS year
+      FROM `{{render(vars.table)}}_ext`
 
   - id: add_unique_ids
     type: io.kestra.plugin.gcp.bigquery.Query
@@ -91,6 +93,7 @@ tasks:
         CAST(quarter AS STRING),
         CAST(year AS STRING)
       ))
+      WHERE true
 
   - id: purge_files
     type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
