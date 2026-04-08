@@ -1,0 +1,13 @@
+config {
+    type: "view",
+    description: "Development data filtered to only include rows from the latest available year's data pulls",
+}
+
+SELECT *
+FROM ${ref("development_pipeline")}
+WHERE year = (SELECT MAX(year) FROM ${ref("development_pipeline")})
+/*
+ * Improvements:
+ *  - Avoid using subquery in WHERE clause
+ *  - Limit columns retrieved if possible
+ */

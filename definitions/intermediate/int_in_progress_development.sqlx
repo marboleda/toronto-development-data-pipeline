@@ -1,0 +1,15 @@
+config {
+    type: "view",
+    description: "All of the development projects which have not yet been completed but are in the pipeline",
+}
+
+SELECT
+    id,
+    pipeline_status,
+    application_number,
+    date_received,
+    proposed_residential_gross_floor_area,
+    proposed_non_residential_gross_floor_area,
+    proposed_residential_units
+FROM ${ref("int_latest_results")}
+WHERE pipeline_status IN ('Active', 'Under Review')

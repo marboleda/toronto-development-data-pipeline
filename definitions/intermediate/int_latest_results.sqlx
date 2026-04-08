@@ -1,0 +1,8 @@
+config {
+    type: "view",
+    description: "Development data filtered to only include rows from the latest data pull (most recent year, most recent quarter)",
+}
+
+SELECT *
+FROM ${ref("int_latest_year_results")}
+WHERE quarter = (SELECT MAX(quarter) FROM ${ref("int_latest_year_results")})

@@ -1,0 +1,6 @@
+config {
+    type: "declaration",
+    database: "<insert your GCP Project ID here>",
+    schema: "<insert your BigQuery dataset name here>",
+    name: "development_pipeline"
+}
