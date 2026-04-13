@@ -31,6 +31,8 @@ We will be using **batch** processing for this project.
 The Development Pipeline source data is refreshed Quarterly, and site development in general takes time. So there's no need for a real-time stream processing.
 
 ## Dashboard
+<img width="600" height="638" alt="image" src="https://github.com/user-attachments/assets/f9ba9c17-8d28-4b53-ac12-ffeb6b942764" />
+
 
 ## Notes & Potential Improvements
 - The source data does not have a well-defined data dictionary yet, so we need to infer or make assumptions. In a real-world scenario, we should verify with the source data provider about the fields and how they operate (e.g. uniqueness of `Application Number`, whether it ever changes, whether we can be sure that `_id` corresponds to the same application between each data refresh, etc.)  
