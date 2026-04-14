@@ -8,3 +8,4 @@ To run these, you will need to create your own Dataform project in your GCP inst
 
 Make sure to replace the values in **sources/bq_development_pipeline.sqlx** with the relevant ones for your project.
 
+Start the execution in Dataform (making sure all the actions included in the definitions folder are ran) and you should get the resulting transformations and tables.

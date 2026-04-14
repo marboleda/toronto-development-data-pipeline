@@ -16,7 +16,6 @@ By processing & analysing this data, it can gives us insight and trends relating
 * Comparisons between residential vs. non-residential
 
 
-
 ## Architecture
 | Technology | Purpose |
 |---|---|
@@ -31,11 +30,13 @@ We will be using **batch** processing for this project.
 The Development Pipeline source data is refreshed Quarterly, and site development in general takes time. So there's no need for a real-time stream processing.
 
 ## Dashboard
+The dashboard was created using Looker Studio and can be found [here](https://lookerstudio.google.com/reporting/68066784-7aac-4c0f-97a6-18b83965f9c2).
+
 <img width="600" height="638" alt="image" src="https://github.com/user-attachments/assets/f9ba9c17-8d28-4b53-ac12-ffeb6b942764" />
 
 
 ## Notes & Potential Improvements
-- The source data does not have a well-defined data dictionary yet, so we need to infer or make assumptions. In a real-world scenario, we should verify with the source data provider about the fields and how they operate (e.g. uniqueness of `Application Number`, whether it ever changes, whether we can be sure that `_id` corresponds to the same application between each data refresh, etc.)  
+- The source data does not have a well-defined data dictionary yet, so we need to infer or make assumptions. In a real-world scenario, we should verify with the source data provider about the fields and how they operate (e.g. uniqueness of `Application Number`, whether it ever changes, whether we can be sure that `_id` corresponds to the same application between each data refresh, etc.). We also don't know what units some data points are in.  
 
 - Source data does not have info that could be useful
   - E.g. We have the date when the application was received. But for projects that have already been Built, we do not have a "completion date" field
