@@ -34,6 +34,12 @@ The dashboard was created using Looker Studio and can be found [here](https://lo
 
 <img width="600" height="638" alt="image" src="https://github.com/user-attachments/assets/f9ba9c17-8d28-4b53-ac12-ffeb6b942764" />
 
+## How-To
+### Pre-Requisites
+- [Terraform](https://developer.hashicorp.com/terraform/install) is installed in your system
+- You have a [Google Cloud Platform](https://cloud.google.com) account
+
+### Steps
 
 ## Notes & Potential Improvements
 - The source data does not have a well-defined data dictionary yet, so we need to infer or make assumptions. In a real-world scenario, we should verify with the source data provider about the fields and how they operate (e.g. uniqueness of `Application Number`, whether it ever changes, whether we can be sure that `_id` corresponds to the same application between each data refresh, etc.). We also don't know what units some data points are in.  
