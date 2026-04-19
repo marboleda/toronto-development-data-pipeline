@@ -38,8 +38,21 @@ The dashboard was created using Looker Studio and can be found [here](https://lo
 ### Pre-Requisites
 - [Terraform](https://developer.hashicorp.com/terraform/install) is installed in your system
 - You have a [Google Cloud Platform](https://cloud.google.com) account
+  - Make sure you have a project created that you will use for this pipeline.
+  - Make sure you have a [Service Account](https://docs.cloud.google.com/iam/docs/service-accounts-create) in the project with the following roles:
+    - BigQuery Data Editor
+    - BigQuery Job User
+    - BigQuery User
+    - Dataform Admin
+    - Storage Admin
+  - Make sure you have BigQuery API and Cloud Storage API [enabled](https://support.google.com/googleapi/answer/6158841?hl=en) for your project
+- [Docker Desktop](https://docs.docker.com/engine/install) / [Docker Engine](https://docs.docker.com/engine/install/) is installed
 
 ### Steps
+1. Follow the steps in the [infrastructure](https://github.com/marboleda/toronto-development-data-pipeline/tree/main/infrastructure) folder to set up resources using Terraform.
+2. Follow the steps in the [kestra](https://github.com/marboleda/toronto-development-data-pipeline/tree/main/kestra) folder to complete the Extract of source data and Load into BigQuery.
+3. In your Google Cloud Console, go to [BigQuery > Dataform](https://console.cloud.google.com/bigquery/dataform). Create a new repository and within it, a new development workspace.
+4. Within that Dataform workspace, follow the steps contained in the definitions folder to create your transformations.
 
 ## Notes & Potential Improvements
 - The source data does not have a well-defined data dictionary yet, so we need to infer or make assumptions. In a real-world scenario, we should verify with the source data provider about the fields and how they operate (e.g. uniqueness of `Application Number`, whether it ever changes, whether we can be sure that `_id` corresponds to the same application between each data refresh, etc.). We also don't know what units some data points are in.  
