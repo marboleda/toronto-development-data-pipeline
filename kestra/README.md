@@ -20,7 +20,7 @@ We are using Kestra to extract the source data, upload it to GCP, and also sched
      However, if you want to run it manually, you can do so with backfills. But you **MUST** follow these conditions:
           - Figure out which quarter of the year you are currently in (e.g. January - March is Q1, April - June is Q2, ...).
           - Go to the [source data page](https://open.toronto.ca/dataset/development-pipeline/) and check the "Data last refreshed" field
-          - If this field has a value in the previous quarter, you can collect that data by executing a backfill in a time range including the most recent quarter end (April 1st 00:00:00 for Q1, July 1st 00:00:00 for Q2, November 1st 00:00:00 for Q3, and January 1st 00:00:00 for Q4).
+          - If this field has a value in the previous quarter, you can collect that data by executing a backfill in a time range including the most recent quarter end (April 1st 00:00:00 for Q1, July 1st 00:00:00 for Q2, October 1st 00:00:00 for Q3, and January 1st 00:00:00 for Q4).
           - If this field has a value for the current quarter, do not backfill as you will end up with bad data. You will have to wait until the quarter ends for this flow to run.
      5. (No action required) **05_data_load** will run automatically once flow 04 completes and will load the temp data into the final table in BigQuery
 
