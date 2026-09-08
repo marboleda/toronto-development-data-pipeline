@@ -8,9 +8,21 @@ terraform {
 }
 
 provider "google" {
-    credentials = file(var.credentials)
     project = var.project
     region  = var.region
+}
+
+resource "google_service_account" "toronto_development_service_account" {
+    account_id = var.service_account_id
+    display_name = "Toronto Development Service Account"
+}
+
+resource "google_project_iam_member" "member-role" {
+    for_each = toset(var.iam_roles)
+    role    = each.value
+    project = var.project
+    member  = "serviceAccount:${google_service_account.toronto_development_service_account.email}"
+    depends_on = [google_service_account.toronto_development_service_account]
 }
 
 resource "google_storage_bucket" "development_data_bucket" {
