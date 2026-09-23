@@ -8,6 +8,7 @@ We are using Kestra to extract the source data, upload it to GCP, and also sched
      ```
      SECRET_SERVICE_ACCOUNT_KEY=<your_gcp_service_account_key>
      ```
+     If you need help with getting a Service Account Key, refer to [here](https://kestra.io/docs/how-to-guides/google-credentials#add-service-account-as-a-secret)
 4. Get Kestra running by running `docker compose up` (this uses the `compose.yaml` file to know what to spin up).
      - If this fails, double check that your Docker Desktop is running
 5. Access the Kestra UI by visiting http://localhost:8080

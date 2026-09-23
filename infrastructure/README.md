@@ -1,5 +1,11 @@
 # Infrastructure Provisioning
 We are using Terraform to create the infrastructure for this pipeline:
+* Service account with the appropriate permissions
+    * BigQuery Data Editor
+    * BigQuery Job User
+    * BigQuery User
+    * Dataform Admin
+    * Storage Admin
 * Google Cloud Storage bucket
 * Google BigQuery dataset
 

@@ -31,7 +31,7 @@ variable "bigquery_dataset_name" {
 variable "service_account_id" {
     description = "Id of the service account to be created"
     # Provide an ID of 6-30 characters for your service account. E.g. "toronto-development"
-    default = "your-service-account-id"
+    default = "toronto-development"
 }
 
 variable "iam_roles" {
