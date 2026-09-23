@@ -45,3 +45,9 @@ variable "iam_roles" {
         "roles/storage.admin"
     ]
 }
+
+variable "me_user_email" {
+    description = "Your email address to grant impersonation permission"
+    # Provide your email address to grant impersonation permission for the service account.
+    default = "your-email@example.com"
+}
