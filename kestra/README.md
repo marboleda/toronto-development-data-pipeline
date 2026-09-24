@@ -8,7 +8,8 @@ We are using Kestra to extract the source data, upload it to GCP, and also sched
      ```
      SECRET_SERVICE_ACCOUNT_KEY=<your_gcp_service_account_key>
      ```
-4. Get Kestra running by running `docker compose up` (this uses the `compose.yaml` file to know what to spin up).
+     If you need help with getting a Service Account Key, refer to [here](https://kestra.io/docs/how-to-guides/google-credentials#add-service-account-as-a-secret)
+4. Get Kestra running by running `docker compose up` (this uses the `compose.yaml`).
      - If this fails, double check that your Docker Desktop is running
 5. Access the Kestra UI by visiting http://localhost:8080
 6. Import each of the flows in the `flows` folder, and run them as follows:

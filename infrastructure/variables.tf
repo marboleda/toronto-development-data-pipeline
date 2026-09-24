@@ -1,9 +1,3 @@
-variable "credentials" {
-    description = "GCP Service Account credentials"
-    # Provide the path to your GCP Service Account credentials JSON file.
-    default = "path/to/credentials.json"
-}
-
 variable "project" {
     description = "GCP Project ID"
     # Provide your GCP Project ID.
@@ -34,3 +28,26 @@ variable "bigquery_dataset_name" {
     default = "your_bigquery_dataset_name"
 }
 
+variable "service_account_id" {
+    description = "Id of the service account to be created"
+    # Provide an ID of 6-30 characters for your service account. E.g. "toronto-development"
+    default = "toronto-development"
+}
+
+variable "iam_roles" {
+    type = list(string)
+    description = "List of IAM roles to assign to the service account"
+    default = [
+        "roles/bigquery.dataEditor",
+        "roles/bigquery.jobUser",
+        "roles/bigquery.user",
+        "roles/dataform.admin",
+        "roles/storage.admin"
+    ]
+}
+
+variable "me_user_email" {
+    description = "Your email address to grant impersonation permission"
+    # Provide your email address to grant impersonation permission for the service account.
+    default = "your-email@example.com"
+}

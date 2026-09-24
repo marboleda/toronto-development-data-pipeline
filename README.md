@@ -39,12 +39,7 @@ The dashboard was created using Looker Studio and can be found [here](https://lo
 - [Terraform](https://developer.hashicorp.com/terraform/install) is installed in your system
 - You have a [Google Cloud Platform](https://cloud.google.com) account
   - Make sure you have a project created that you will use for this pipeline.
-  - Make sure you have a [Service Account](https://docs.cloud.google.com/iam/docs/service-accounts-create) in the project with the following roles:
-    - BigQuery Data Editor
-    - BigQuery Job User
-    - BigQuery User
-    - Dataform Admin
-    - Storage Admin
+  - Make sure you have [Google Cloud CLI installed](https://docs.cloud.google.com/sdk/docs/install-sdk)
   - Make sure you have BigQuery API and Cloud Storage API [enabled](https://support.google.com/googleapi/answer/6158841?hl=en) for your project
 - [Docker Desktop](https://docs.docker.com/engine/install) / [Docker Engine](https://docs.docker.com/engine/install/) is installed
 
